@@ -1,0 +1,1 @@
+Painting board made with VanillaJS (Nomad Coders: https://nomadcoders.co/javascript-for-beginners-2)
