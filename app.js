@@ -2,7 +2,9 @@ const canvas = document.getElementById("jsCanvas");
 const ctx = canvas.getContext("2d");
 const colors = document.querySelectorAll(".controls__color"); //배열로 반환
 const range = document.getElementById("jsRange");
+const clear = document.getElementById("jsClear");
 const mode = document.getElementById("jsMode");
+const saveBtn = document.getElementById("jsSave");
 
 const INITIAL_COLOR = "#2c2c2c";
 const CANVAS_SIZE = 700;
@@ -10,6 +12,10 @@ const CANVAS_SIZE = 700;
 //pixel modifier에 사이즈를 줘야한다.
 canvas.width = CANVAS_SIZE;
 canvas.height = CANVAS_SIZE;
+
+//저장시에 배경이 투명하게 나오는걸 막으려고
+ctx.fillStyle = "white";
+ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
 //strokeStyle: 선의 색깔
 //fillStyle: 도형의 색깔
@@ -59,6 +65,13 @@ function handleRangeChange(event) {
   ctx.lineWidth = size;
 }
 
+function handleClearClick() {
+  const before = ctx.fillStyle;
+  ctx.fillStyle = "white";
+  ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+  ctx.fillStyle = before;
+}
+
 function handleModeClick(event) {
   if (filling === true) {
     filling = false;
@@ -75,6 +88,18 @@ function handleCanvasClick() {
   }
 }
 
+function handleCM(event) {
+  event.preventDefault();
+}
+
+function handleSaveClick() {
+  const img = canvas.toDataURL();
+  const link = document.createElement("a");
+  link.href = img;
+  link.download = "paintJS";
+  link.click();
+}
+
 //색 변화시키기
 colors.forEach((color) => color.addEventListener("click", handleColorClick));
 
@@ -85,6 +110,8 @@ if (canvas) {
   canvas.addEventListener("mouseup", stopPainting);
   canvas.addEventListener("mouseleave", stopPainting);
   canvas.addEventListener("click", handleCanvasClick);
+  //마우스 우클릭하면 뜨는 창을 안 뜨게 한다. 내가 만든 Save버튼을 사용하게 하려고
+  canvas.addEventListener("contextmenu", handleCM);
 }
 
 //range가 있는지 확인
@@ -92,9 +119,19 @@ if (range) {
   range.addEventListener("input", handleRangeChange);
 }
 
+//clear가 있는지 확인
+if (clear) {
+  clear.addEventListener("click", handleClearClick);
+}
+
 //mode가 있는지 확인
 if (mode) {
   mode.addEventListener("click", handleModeClick);
+}
+
+//save가 있는지 확인
+if (saveBtn) {
+  saveBtn.addEventListener("click", handleSaveClick);
 }
 
 /*
